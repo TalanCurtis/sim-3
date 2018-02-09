@@ -49,15 +49,15 @@ passport.use(new Auth0Strategy({
         }
     })
 }));
-passport.serializeUser((id, done) => {
+passport.serializeUser((user, done) => {
     console.log('serializeUser')
-    done(null, id)
+    done(null, user)
 });
-passport.deserializeUser((id, done) => {
+passport.deserializeUser((user, done) => {
     console.log('deserializeUser')
     const db = app.get('db');
-    db.find_logged_in_user([id]).then(dbResponse => {
-        done(null, id)
+    db.find_logged_in_user([user]).then(dbResponse => {
+        done(null, user)
     })
 });
 
@@ -72,8 +72,16 @@ app.get('/auth/me', (req, res) => {
     if (!req.user) {
         res.status(404).send('user not loged in')
     } else {
-        res.status(200).send(req.user)
+        // res.status(200).send(req.user)
+        console.log(req.user)
+        res.status(200).json(req.user)
     }
 })
+//// Logout
+app.get('/logout', (req, res)=>{
+    req.logout();
+    res.redirect('http://localhost:3000/')
+} )
+
 // Server Listening
 app.listen(SERVER_PORT, () => (console.log(`Chillin on port: ${SERVER_PORT}`)))

@@ -7,13 +7,14 @@ class Profile extends Component {
 
     componentDidMount(){
         console.log(this.props)
-       // this.props.getUser()
+        this.props.getUser()
     }
 
     render() {
         return (
             <div className="Container_Profile">
                 <Header />
+                {JSON.stringify(this.props.userData, null, 2)}
             </div>
         )
     }

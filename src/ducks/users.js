@@ -11,6 +11,7 @@ const GET_USER = 'GET_USER';
 // Action Creators
 export function getUser(){
     const user = axios.get('/auth/me').then(res => {
+        console.log(res.data)
         return res.data;
     })
     return {

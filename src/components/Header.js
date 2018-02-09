@@ -12,6 +12,7 @@ export default function Header() {
             <Link to='/Dashboard'><img src={image_home} alt=""/></Link>
             <Link to='/Search'><img src={image_search} alt=""/></Link>
             <Link to='/Profile'>Profile</Link>
+            <a href="http://localhost:3006/logout"><button>Logout</button></a>
     </div>
     )
 }
