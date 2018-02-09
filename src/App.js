@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import './Reset.css';
 import './App.css';
-import Auth from './containers/Auth';
+import { HashRouter } from 'react-router-dom';
+import routes from './routes';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        sim 3
-        <Auth />
+        <HashRouter>
+          {routes}
+        </HashRouter>
       </div>
     );
   }
