@@ -19,6 +19,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Database Connection
+massive(CONNECTION_STRING).then(db => {
+    app.set('db', db)
+})
 
 // Set Passport to use Auth0Stragey
 passport.use(new Auth0Strategy({
@@ -28,25 +31,49 @@ passport.use(new Auth0Strategy({
     callbackURL: CALLBACK_URL,
     scope: 'openid profile'
 }, function (accessToken, refreshToken, extraParams, profile, done) {
-    console.log('created auth 0')
-    done(null, profile)
+    // console.log('created auth 0')
+    // done(null, profile)
+    const db = app.get('db');
+
+    //deconstructing Profile we get from auth 0
+    const { sub, given_name, family_name } = profile._json;
+
+    db.find_user([sub]).then(dbResponse => {
+        if (dbResponse[0]) {
+            done(null, dbResponse[0].id)
+        } else {
+            const image = 'https://robohash.org/' + Math.floor(Math.random() * 100) + '?set=set3'
+            db.create_user([sub, image, given_name, family_name, 'none', 'none', 'none', 'none', 01, 01, 2001]).then(dbResponse => {
+                done(null, dbResponse[0].id)
+            })
+        }
+    })
 }));
-passport.serializeUser((profile, done)=>{
+passport.serializeUser((id, done) => {
     console.log('serializeUser')
-    done(null, profile)
+    done(null, id)
 });
-passport.deserializeUser((profile, done)=>{
+passport.deserializeUser((id, done) => {
     console.log('deserializeUser')
-    done(null, profile)
+    const db = app.get('db');
+    db.find_logged_in_user([id]).then(dbResponse => {
+        done(null, id)
+    })
 });
 
 // EndPoints
 //// Auth 0
 app.get('/auth', passport.authenticate('auth0'));
 app.get('/auth/callback', passport.authenticate('auth0', {
-    successRedirect: 'http://localhost:3000'
+    successRedirect: 'http://localhost:3000/#/Dashboard/'
 }))
-//app.get('auth/me', )
-
+//// This enpoint checks to see if user is still loged in
+app.get('/auth/me', (req, res) => {
+    if (!req.user) {
+        res.status(404).send('user not loged in')
+    } else {
+        res.status(200).send(req.user)
+    }
+})
 // Server Listening
 app.listen(SERVER_PORT, () => (console.log(`Chillin on port: ${SERVER_PORT}`)))
