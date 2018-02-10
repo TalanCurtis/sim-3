@@ -40,25 +40,28 @@ passport.use(new Auth0Strategy({
 
     db.find_user([sub]).then(dbResponse => {
         if (dbResponse[0]) {
-            done(null, dbResponse[0].id)
+            done(null, dbResponse[0])
         } else {
             const image = 'https://robohash.org/' + Math.floor(Math.random() * 100) + '?set=set3'
             db.create_user([sub, image, given_name, family_name, 'none', 'none', 'none', 'none', 01, 01, 2001]).then(dbResponse => {
-                done(null, dbResponse[0].id)
+                done(null, dbResponse[0])
             })
         }
     })
 }));
 passport.serializeUser((user, done) => {
-    console.log('serializeUser')
+    //console.log('serializeUser')
     done(null, user)
 });
 passport.deserializeUser((user, done) => {
     console.log('deserializeUser')
+    console.log('this is user:', user)
     const db = app.get('db');
-    db.find_logged_in_user([user]).then(dbResponse => {
-        done(null, user)
-    })
+    done(null, user)
+    // why database call here?????
+    // db.find_logged_in_user([user[id]]).then(dbResponse => {
+    //     done(null, user[0])
+    // })
 });
 
 // EndPoints
@@ -73,7 +76,7 @@ app.get('/auth/me', (req, res) => {
         res.status(404).send('user not loged in')
     } else {
         // res.status(200).send(req.user)
-        console.log(req.user)
+        //console.log('this auth/me'+req.user)
         res.status(200).json(req.user)
     }
 })

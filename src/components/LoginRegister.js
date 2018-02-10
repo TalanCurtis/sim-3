@@ -3,7 +3,7 @@ import logo from '../images/logo.png'
 
 export default class LoginRegister extends Component {
     handleClick() {
-        console.log('Login Register Clicked')
+        //console.log('Login Register Clicked')
     }
     render() {
         return (

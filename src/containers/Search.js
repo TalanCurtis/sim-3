@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 class Search extends Component{
 
     componentDidMount(){
-        console.log(this.props)
+        //console.log(this.props)
         this.props.getUser()
     }
 

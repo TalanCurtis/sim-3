@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 class Dashboard extends Component {
     componentDidMount(){
-        console.log(this.props)
         this.props.getUser()
     }
 
